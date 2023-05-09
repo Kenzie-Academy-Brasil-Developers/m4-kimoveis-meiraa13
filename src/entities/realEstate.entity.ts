@@ -1,4 +1,7 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import Address from "./address.entity";
+import Category from "./category.entity";
+import Schedule from "./schedule.entity";
 
 @Entity('real_estate')
 class RealEstate {
@@ -6,10 +9,10 @@ class RealEstate {
     id: number
 
     @Column({type: 'boolean', nullable:true})
-    sold: boolean | null | undefined
+    sold?: boolean | null | undefined
 
     @Column({type: 'decimal', precision:12, scale:2, default:0, nullable:true})
-    value: string | number
+    value?: string | number | null | undefined
 
     @Column({type: 'integer'})
     size: number
@@ -19,6 +22,16 @@ class RealEstate {
 
     @UpdateDateColumn()
     updatedAt?: string | Date
+
+    @OneToOne(() => Address, (address) => address.realEstate)
+    @JoinColumn()
+    address: Address
+
+    @ManyToOne(() => Category)
+    category: Category
+
+    @OneToMany(() => Schedule, (schedule)=>schedule.realEstate)
+    schedule: Schedule[]
 
 
 }

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn  } from "typeorm";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn  } from "typeorm";
+import RealEstate from "./realEstate.entity";
 
 @Entity('addresses')
 class Address {
@@ -12,13 +13,16 @@ class Address {
     zipCode: string
 
     @Column({ type: 'varchar', length: 7, nullable:true})
-    number: string
+    number?: string | null | undefined
 
     @Column({type: 'varchar', length:20})
     city: string
 
     @Column({type: 'varchar', length:2})
     state: string
+
+    @OneToOne(() => RealEstate, (realEstate) => realEstate.address)
+    realEstate: RealEstate
 
 }
 

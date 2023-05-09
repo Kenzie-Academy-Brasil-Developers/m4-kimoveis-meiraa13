@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import RealEstate from "./realEstate.entity";
+import User from "./user.entity";
 
 @Entity('schedules')
 class Schedule {
@@ -6,10 +8,16 @@ class Schedule {
     id: number
 
     @Column({type: 'date'})
-    date: Date | string
+    date: string | Date
 
     @Column({type: 'time'})
     hour: string 
+
+    @ManyToOne(() => RealEstate)
+    realEstate: RealEstate
+
+    @ManyToOne(() => User)
+    user: User
 }
 
 export default Schedule
