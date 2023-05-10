@@ -8,26 +8,26 @@ class RealEstate {
     @PrimaryGeneratedColumn('increment')
     id: number
 
-    @Column({type: 'boolean', nullable:true})
-    sold?: boolean | null | undefined
+    @Column({type: 'boolean', default:false})
+    sold: boolean 
 
-    @Column({type: 'decimal', precision:12, scale:2, default:0, nullable:true})
-    value?: string | number | null | undefined
+    @Column({type: 'decimal', precision:12, scale:2, default:0})
+    value: string | number 
 
     @Column({type: 'integer'})
     size: number
 
-    @CreateDateColumn()
-    createdAt?: string | Date
+    @CreateDateColumn({type: 'date'})
+    createdAt: string | Date
 
-    @UpdateDateColumn()
-    updatedAt?: string | Date
+    @UpdateDateColumn({type: 'date'})
+    updatedAt: string | Date
 
     @OneToOne(() => Address, (address) => address.realEstate)
     @JoinColumn()
     address: Address
 
-    @ManyToOne(() => Category)
+    @ManyToOne(() => Category, (category) =>category.realEstate)
     category: Category
 
     @OneToMany(() => Schedule, (schedule)=>schedule.realEstate)
