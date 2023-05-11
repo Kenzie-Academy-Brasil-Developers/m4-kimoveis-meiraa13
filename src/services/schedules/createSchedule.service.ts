@@ -40,10 +40,9 @@ const createScheduleService = async(requestData:TScheduleData, userId:number, re
    }
   
    const userBooked: Schedule | null = await scheduleRepository.createQueryBuilder('schedule')
-   .leftJoinAndSelect('schedule.user', 'user')
-   .where('schedule.date = :date', {date: date})
-   .where('schedule.hour = :hour', {hour: requestData.hour})
-   .where('schedule.user =:id', {id: userId})
+   .where('schedule.date = :date', {date: requestData.date})
+   .andWhere('schedule.hour = :hour', {hour: requestData.hour})
+   .andWhere('schedule.userId = :userId', {userId})
    .getOne()
 
    if(userBooked){
@@ -51,10 +50,9 @@ const createScheduleService = async(requestData:TScheduleData, userId:number, re
    }
 
    const scheduleBooked : Schedule | null = await scheduleRepository.createQueryBuilder('schedule')
-   .leftJoinAndSelect('schedule.realEstate', 'realEstate')
-   .where('schedule.date = :date', {date:date})
-   .where('schedule.hour = :hour', {hour:requestData.hour})
-   .where('schedule.realEstate = :id', {id: realEstateId})
+   .where('schedule.date = :date', {date: requestData.date})
+   .andWhere('schedule.hour = :hour', {hour:requestData.hour})
+   .andWhere('schedule.realEstateId = :realEstateId', {realEstateId})
    .getOne()
 
    if(scheduleBooked){
