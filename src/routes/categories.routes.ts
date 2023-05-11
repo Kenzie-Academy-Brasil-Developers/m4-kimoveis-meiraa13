@@ -5,7 +5,7 @@ import { ensureRequestIsValidMiddleware } from '../middlewares/ensureRequestIsVa
 import { categoryRequestSchema } from "../schemas/categories.schemas";
 import { onlyAdminPermissionMiddleware } from "../middlewares/onlyAdminPermission.middleware";
 import { ensureCategoryExistsMiddleware } from "../middlewares/ensureCategoryExists.middleware";
-import { ensureIdIsValidMiddleware } from "../middlewares/ensureIdIsValid.middleware";
+
 
 
 const categoryRoutes: Router = Router()
