@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { TScheduleData, TScheduleRequest } from "../../interfaces/schedules.interfaces";
+import { TScheduleData } from "../../interfaces/schedules.interfaces";
 import { RealEstate, Schedule, User } from "../../entities";
 import { AppDataSource } from "../../data-source";
 import { AppError } from "../../error";
@@ -10,11 +10,12 @@ const createScheduleService = async(requestData:TScheduleData, userId:number, re
     const realEstateRepository: Repository<RealEstate> = AppDataSource.getRepository(RealEstate)
     const scheduleRepository: Repository<Schedule> = AppDataSource.getRepository(Schedule)
 
-    const dateString = requestData.date
-    const separatedDate = dateString.split('/')
-    const year = Number(separatedDate[0])
-    const month = Number(separatedDate[1])
-    const day = Number(separatedDate[2])
+    const date = new Date(requestData.date)
+    const dayOfTheWeek = date.getDay()
+
+    if(dayOfTheWeek == 0 || dayOfTheWeek == 6){
+          throw new AppError('Invalid date, work days are monday to friday',400)
+    }
 
    const realEstate : RealEstate | null = await realEstateRepository.findOne({
     where:{
@@ -40,7 +41,7 @@ const createScheduleService = async(requestData:TScheduleData, userId:number, re
   
    const userBooked: Schedule | null = await scheduleRepository.createQueryBuilder('schedule')
    .leftJoinAndSelect('schedule.user', 'user')
-   .where('schedule.date = :date', {date: new Date(year, day, month)})
+   .where('schedule.date = :date', {date: date})
    .where('schedule.hour = :hour', {hour: requestData.hour})
    .where('schedule.user =:id', {id: userId})
    .getOne()
@@ -51,7 +52,7 @@ const createScheduleService = async(requestData:TScheduleData, userId:number, re
 
    const scheduleBooked : Schedule | null = await scheduleRepository.createQueryBuilder('schedule')
    .leftJoinAndSelect('schedule.realEstate', 'realEstate')
-   .where('schedule.date = :date', {date:new Date(year, day, month)})
+   .where('schedule.date = :date', {date:date})
    .where('schedule.hour = :hour', {hour:requestData.hour})
    .where('schedule.realEstate = :id', {id: realEstateId})
    .getOne()
@@ -64,7 +65,7 @@ const createScheduleService = async(requestData:TScheduleData, userId:number, re
 
    const newSchedule: Schedule = scheduleRepository.create({
         hour: requestData.hour,
-        date: new Date(year, day, month),
+        date: date,
         realEstate: realEstate,
         user: user!
    })
